@@ -187,9 +187,7 @@ wiced_result_t mqtt_app_unsubscribe( wiced_mqtt_object_t mqtt_obj, char *topic )
 wiced_result_t mqtt_app_publish( wiced_mqtt_object_t mqtt_obj, uint8_t qos, char *topic, uint8_t *data, uint32_t data_len )
 {
     wiced_mqtt_msgid_t pktid;
-    WPRINT_APP_INFO(("before publish\n"));
     pktid = wiced_mqtt_publish( mqtt_obj, topic, data, data_len, qos );
-    WPRINT_APP_INFO(("after publish\n"));
     if ( pktid == 0 )
     {
         return WICED_ERROR;
