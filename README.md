@@ -51,7 +51,7 @@ The system will
 Note, sensor readings are formatted as JSON ```{"parameters": {"p": 94465.42,"h_unit": "%","p_unit": "Pa","t": 28.41,"h": 52.71,"t_unit": "°C"}}```
 For more details about bridges module in scriptr.io please refer to the [documentation](https://www.scriptr.io/documentation#documentation-bridges)
 
-##Scriptr.io configuration, part 2
+## Scriptr.io configuration, part 2
 Once the board is started, it will print out the needed information about the quickstart account, by providing the generated device id.
 In order to process the data pushed to bluemix in scriptr.io, you will need to start a new mqtt bridge, link it to channel "nebula-demo" and subscribe it to your "echo" script.
 Configuration of the bridge will be printed out on the terminal in the following format:
