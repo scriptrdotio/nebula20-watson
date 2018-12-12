@@ -72,8 +72,6 @@ static wiced_ip_address_t    broker_address;
 static wiced_mqtt_callback_t callbacks = mqtt_connection_event_cb;
 static wiced_mqtt_security_t security;
 static wiced_mqtt_object_t mqtt_object;
-static char clientId[CLIENT_ID_PREFIX_LENGTH + 8];
-
 /**
  * event handler for button 1 clicks
  * When the button is clicked, the system will get a reading from the sensor, format it (json) and publish it to bluemix.
@@ -173,7 +171,7 @@ void mqtt_setup()
     }
 
     wiced_mqtt_init( mqtt_object );
-    ret = mqtt_conn_open( mqtt_object,&broker_address, WICED_STA_INTERFACE, callbacks, &security, clientId );
+    ret = mqtt_conn_open( mqtt_object,&broker_address, WICED_STA_INTERFACE, callbacks, &security, CLIENT_ID);
     if ( ret == WICED_SUCCESS )
     {
             WPRINT_APP_INFO(( "OK.\n\n" ));
@@ -217,47 +215,12 @@ void application_start( )
     /* Initialise the WICED device */
     wiced_init();
 
-    /*
-     * initialize rand seed, using wiced_time_get_time as time(NULL) is always returning 1
-     */
-    wiced_time_t t;
-    wiced_time_get_time(&t);
-    srand(t);
-    /**
-     * variables for reading device id in conf
-     */
-    app_config_dct_t app_config;
-    app_config_dct_t * read_app_config;
-
-    /**
-     * check if a client id was generated for this device before
-     * if so, use it, else generate a new random one and use it
-     */
-    wiced_dct_read_lock( (void**) &read_app_config, WICED_FALSE, DCT_APP_SECTION, 0, 8);
-    wiced_dct_read_unlock( read_app_config, WICED_FALSE );
-    WPRINT_APP_INFO(("read conf %.9s\n", read_app_config->clientId));
-    if(read_app_config->clientId[0] != '0')
-    {
-        WPRINT_APP_INFO(("no client id specified, first init, generating a new one"));
-        char cid[8];
-        random_string(cid, sizeof(cid));
-        strcpy(app_config.clientId, cid);
-        wiced_dct_write( &app_config, DCT_APP_SECTION, 0, 8);
-    }
-    else
-    {
-        WPRINT_APP_INFO(("Existing value read, device id is %.8s", read_app_config->clientId));
-        strcpy(app_config.clientId, read_app_config->clientId);
-    }
-
-    strcpy(clientId, CLIENT_ID_PREFIX);
-    strcat(clientId, app_config.clientId);
     WPRINT_APP_INFO(("To view data, connect scriptr.io to the mqtt endpoint defined as:\n"));
     WPRINT_APP_INFO(("Protocol: MQTTS\n"));
     WPRINT_APP_INFO(("URL: %s\n", MQTT_BROKER_ADDRESS));
     WPRINT_APP_INFO(("Port: 8883\n"));
-    WPRINT_APP_INFO(("Topic: iot-2/type/scriptr-demo/id/%s/evt/scriptr-demo/fmt/json\n", app_config.clientId));
-    WPRINT_APP_INFO(("ClientId: a:quickstart:scriptr-demo\n"));
+    WPRINT_APP_INFO(("Topic: %s\n", PUB_TOPIC));
+    WPRINT_APP_INFO(("ClientId: %s\n", CLIENT_ID));
 
     /* Initialise network using wifi */
     netword_setup();
@@ -327,9 +290,10 @@ static void print_sensor_data(struct bme280_data *comp_data)
 {
     WPRINT_APP_INFO(("Temperature = %.2f\xf8""C, Humidity = %.2f%%, Pressure = %.2fPa\n", comp_data->temperature, comp_data->humidity, comp_data->pressure));
 }
-static char out[90];
+static char out[102];
 static char* format_sensor_data(struct bme280_data *comp_data)
 {
-    sprintf(out, "{\"t\": %.2f, \"t_unit\":\"\xf8C\", \"h\":%.2f, \"h_unit\":\"%%\", \"p\" : %.2f, \"p_unit\":\"Pa\"}", comp_data->temperature, comp_data->humidity, comp_data->pressure);
+    sprintf(out, "{\"d\": {\"p\":%.2f,\"h_unit\":\"%%\",\"p_unit\":\"Pa\",\"t\":%.2f,\"h\":%.2f,\"t_unit\":\"C\", \"id\":\"%s\"}}",
+            comp_data->pressure, comp_data->temperature, comp_data->humidity, DEVICE_ID);
     return out;
 }
