@@ -1,18 +1,18 @@
 /**
- * The following code is a sample demonstrating nebula 2.0 functionality with www.scriptr.io as a cloud backend, going through watson bluemix.
+ * The following code is a sample demonstrating nebula 2.0 functionality with www.scriptr.io as a cloud backend, going through Watson IoT.
  * The full application is described in details in our [blog](https://blog.scriptr.io/<KEY_TO_BLOG>)
  * In summary, this sample will demonstrate
- * 1. connectivity to scriptr.io, over mqtt, through bluemix quickstart
+ * 1. connectivity to scriptr.io, over mqtt, through Watson IoT quickstart
  * a. on-demand and periodic publish of sensor readings
- * b. receiving messages from the cloud (over an mqtt subscription): this is not implemented since bluemix quickstart doesn't allow talking back to a device
+ * b. receiving messages from the cloud (over an mqtt subscription): this is not implemented since Watson IoT quickstart doesn't allow talking back to a device
  * The code is based on
  * 1. wiced sample code secrure_mqtt
  * 2. bme280 drivers from [cypress community](https://community.cypress.com/docs/DOC-14605)
  */
-#include "../bluemix/mqtt.h"
+#include "../watson/mqtt.h"
 #include "../bme280_test/bme280_test.h"
 #include "../bme280_test/bme280_wiced_wrapper.h"
-#include "bluemix.h"
+#include "watson.h"
 #include "wiced.h"
 #include "wiced_management.h"
 
@@ -74,7 +74,7 @@ static wiced_mqtt_security_t security;
 static wiced_mqtt_object_t mqtt_object;
 /**
  * event handler for button 1 clicks
- * When the button is clicked, the system will get a reading from the sensor, format it (json) and publish it to bluemix.
+ * When the button is clicked, the system will get a reading from the sensor, format it (json) and publish it to Watson IoT.
  * Led1 will be on while publishing
  * if we're publishing already, nothing will happen
  */
@@ -183,7 +183,7 @@ void mqtt_setup()
 }
 
 /**
- * struct to hold the randomly generated bluemix client id.
+ * struct to hold the randomly generated Watson IoT client id.
  * This id will be stored in the dct and will be used after each reset.
  */
 typedef struct
