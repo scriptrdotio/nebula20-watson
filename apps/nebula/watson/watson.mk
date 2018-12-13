@@ -1,9 +1,9 @@
 
-NAME := Nebumix_V1
+NAME := Nebuwatson_V1
 
 $(NAME)_SOURCES :=  mqtt.c \
 					bme280_wiced_wrapper.c \
-					bluemix.c
+					watson.c
 
 $(NAME)_COMPONENTS := drivers/sensors/BME280 \
 				protocols/MQTT
