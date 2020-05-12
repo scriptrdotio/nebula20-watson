@@ -5,6 +5,11 @@
 #define MQTT_MAX_RESOURCE_SIZE              (0x7fffffff)
 static wiced_mqtt_event_type_t expected_event;
 static wiced_semaphore_t semaphore;
+
+#ifndef WICED_MQTT_EVENT_TYPE_SUBSCRIBED
+#define WICED_MQTT_EVENT_TYPE_SUBSCRIBED WICED_MQTT_EVENT_TYPE_SUBCRIBED
+#endif
+
 void mqtt_print_status( wiced_result_t result, const char * ok_message, const char * error_message )
 {
     if ( result == WICED_SUCCESS )
@@ -38,11 +43,10 @@ wiced_result_t mqtt_connection_event_cb( wiced_mqtt_object_t mqtt_object, wiced_
 {
     switch ( event->type )
     {
-
         case WICED_MQTT_EVENT_TYPE_CONNECT_REQ_STATUS:
         case WICED_MQTT_EVENT_TYPE_DISCONNECTED:
         case WICED_MQTT_EVENT_TYPE_PUBLISHED:
-        case WICED_MQTT_EVENT_TYPE_SUBCRIBED:
+        case WICED_MQTT_EVENT_TYPE_SUBSCRIBED:
         case WICED_MQTT_EVENT_TYPE_UNSUBSCRIBED:
         {
             expected_event = event->type;
@@ -155,7 +159,7 @@ wiced_result_t mqtt_app_subscribe( wiced_mqtt_object_t mqtt_obj, char *topic, ui
     {
         return WICED_ERROR;
     }
-    if ( mqtt_wait_for( WICED_MQTT_EVENT_TYPE_SUBCRIBED, WICED_MQTT_TIMEOUT ) != WICED_SUCCESS )
+    if ( mqtt_wait_for( WICED_MQTT_EVENT_TYPE_SUBSCRIBED, WICED_MQTT_TIMEOUT ) != WICED_SUCCESS )
     {
         return WICED_ERROR;
     }
@@ -199,5 +203,3 @@ wiced_result_t mqtt_app_publish( wiced_mqtt_object_t mqtt_obj, uint8_t qos, char
     }
     return WICED_SUCCESS;
 }
-
-
