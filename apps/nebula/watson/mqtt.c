@@ -6,9 +6,8 @@
 static wiced_mqtt_event_type_t expected_event;
 static wiced_semaphore_t semaphore;
 
-#ifndef WICED_MQTT_EVENT_TYPE_SUBSCRIBED
-#define WICED_MQTT_EVENT_TYPE_SUBSCRIBED WICED_MQTT_EVENT_TYPE_SUBCRIBED
-#endif
+
+#define WICED_MQTT_EVENT_TYPE_SUBSCRIBED 4
 
 void mqtt_print_status( wiced_result_t result, const char * ok_message, const char * error_message )
 {
